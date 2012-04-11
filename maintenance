@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ -f REM_this_is_jail ];
+then
+    chmod -R u+r .
+    chmod -R go-wx+r .
+    chmod go+x . 
+    chmod -R go+x python*
+    chmod -R go+x lib64
+    chmod -R go+x lib
+    chmod -R go+x dev
+    chmod -R go+x usr
+    chmod -R go+x include
+    chmod -R go+x maketrace
+
+    mkdir -p scratch
+    sudo rm -rf scratch/*
+    sudo chgrp apache scratch
+    chmod g+rwx scratch
+    chmod o-rwx scratch
+fi
