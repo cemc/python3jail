@@ -4,6 +4,8 @@ if [ -f REM_this_is_jail ];
 then
     chmod -R u+r .
     chmod -R go-wx+r .
+    chmod o-r .git
+    chmod o-r maintenance
     chmod go+x . 
     chmod -R go+x python*
     chmod -R go+x lib64
