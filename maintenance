@@ -5,6 +5,7 @@ then
     chmod -R u+r .
     chmod -R go-wx+r .
     chmod o-r .git
+    chmod o-r .gitignore
     chmod o-r maintenance
     chmod go+x . 
     chmod -R go+x python*

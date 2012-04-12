@@ -283,12 +283,13 @@ class PGLogger(bdb.Bdb):
         user_builtins = {}
 
         for (k,v) in __builtins__.items():
-          if k in ('reload', 'input', 'apply', 'open', 'compile',
-                   '__import__', 'file', 'eval', 'execfile',
-                   'exit', 'quit', 'raw_input',
-                   'dir', 'globals', 'locals', 'vars',
-                   'compile'):
-            continue
+# commented by dave... it's okay to allow imports now, albeit ugly
+#          if k in ('reload', 'input', 'apply', 'open', 'compile',
+#                   '__import__', 'file', 'eval', 'execfile',
+#                   'exit', 'quit', 'raw_input',
+#                   'dir', 'globals', 'locals', 'vars',
+#                   'compile'):
+#            continue
           user_builtins[k] = v
 
         # redirect stdout of the user program to a memory buffer
@@ -373,8 +374,9 @@ class PGLogger(bdb.Bdb):
 
 
 # the MAIN meaty function!!!
-def exec_script_str(script_str, finalizer_func, ignore_id=False):
+def exec_script_str(script_str, finalizer_func, ignore_id=False, stdin=""):
   logger = PGLogger(finalizer_func, ignore_id)
+  sys.stdin = io.StringIO(stdin)
   logger._runscript(script_str)
   logger.finalize()
 

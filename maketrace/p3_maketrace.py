@@ -15,4 +15,6 @@ while True:
   except EOFError:
     break
 
-p3_logger.exec_script_str(user_code, web_finalizer)
+user_stdin = open(3).read()
+
+p3_logger.exec_script_str(user_code, web_finalizer, stdin=user_stdin)
