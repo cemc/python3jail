@@ -92,13 +92,13 @@ def encode(dat, ignore_id=False):
 
       elif typ == type:    # its a class.  What a mess they made of it!
             superclass_names = [e.__name__ for e in dat.__bases__]
-            ret = ['CLASS', dat.__name__, my_small_id, superclass_names]
+            ret = ['CLASS', my_small_id, dat.__name__, superclass_names]
             if dat.__name__ not in native_types:
                 if hasattr(dat, '__dict__'):
                     append_attributes(ret, new_compound_obj_ids, dat.__dict__)
 
       elif repr(typ)[:6] == "<class" and obj_as_string.find('object') >= 0:    # is it  an instance?
-            ret = ['INSTANCE', dat.__class__.__name__, my_small_id]
+            ret = ['INSTANCE', my_small_id, dat.__class__.__name__]
             if hasattr(dat, '__dict__'):
                 append_attributes(ret, new_compound_obj_ids, dat.__dict__)
 
