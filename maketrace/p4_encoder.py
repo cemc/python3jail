@@ -47,9 +47,9 @@ def encode(dat, ignore_id=False):
                            '__weakref__', '__dict__'}
                          ])
       for attr in user_attrs:
-          ret.append([encode_helper(attr, new_compound_obj_ids),
-                      encode_helper(dict[attr], new_compound_obj_ids)])
-
+        foo = [encode_helper(attr, new_compound_obj_ids),
+               encode_helper(dict[attr], new_compound_obj_ids)]
+        ret.append(foo)
 
   def encode_helper(dat, compound_obj_ids):
     # primitive type
@@ -92,13 +92,13 @@ def encode(dat, ignore_id=False):
 
       elif typ == type:    # its a class.  What a mess they made of it!
             superclass_names = [e.__name__ for e in dat.__bases__]
-            ret = ['CLASS', my_small_id, dat.__name__,  superclass_names]
+            ret = ['CLASS', dat.__name__, my_small_id, superclass_names]
             if dat.__name__ not in native_types:
                 if hasattr(dat, '__dict__'):
                     append_attributes(ret, new_compound_obj_ids, dat.__dict__)
 
       elif repr(typ)[:6] == "<class" and obj_as_string.find('object') >= 0:    # is it  an instance?
-            ret = ['INSTANCE', my_small_id, dat.__class__.__name__]
+            ret = ['INSTANCE', dat.__class__.__name__, my_small_id]
             if hasattr(dat, '__dict__'):
                 append_attributes(ret, new_compound_obj_ids, dat.__dict__)
 

@@ -1,14 +1,40 @@
-#!/usr/bin/python3 -u
+# Online Python Tutor
+# Copyright (C) 2010-2011 Philip J. Guo (philip@pgbovine.net)
+# https://github.com/pgbovine/OnlinePythonTutor/
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # A full logger for Python program execution
 # (based on pdb, the standard Python debugger)
 
-# works with Python 3.1.3
+# This is the meat of the Online Python Tutor back-end.  It implements a
+# full logger for Python program execution (based on pdb, the standard
+# Python debugger imported via the bdb module), printing out the values
+# of all in-scope data structures after each executed instruction.
+
+# Note that I've only tested this logger on Python 2.5, so it will
+# probably fail in subtle ways on other Python 2.X (and will DEFINITELY
+# fail on Python 3.X).
+
 
 # upper-bound on the number of executed lines, in order to guard against
 # infinite loops
-MAX_EXECUTED_LINES = 240
+MAX_EXECUTED_LINES = 200
 
+def set_max_executed_lines(m):
+  global MAX_EXECUTED_LINES
+  MAX_EXECUTED_LINES = m
 
 import sys
 import bdb # the KEY import here!
@@ -18,9 +44,9 @@ import traceback
 
 import io
 
-import p3_encoder
+import p4_encoder
 
-IGNORE_VARS = set(('__stdout__', '__builtins__', '__name__', '__exception__' , '__locals__'))   # EPW
+IGNORE_VARS = set(('__stdout__', '__builtins__', '__name__', '__exception__', '__locals__'))
 
 def get_user_stdout(frame):
   #print("In get_user_stdout")
@@ -29,7 +55,6 @@ def get_user_stdout(frame):
   return frame.f_globals['__stdout__'].getvalue()
 
 def get_user_globals(frame):
-  #print("In get_user_globals")
   d = filter_var_dict(frame.f_globals)
   # also filter out __return__ for globals only, but NOT for locals
   if '__return__' in d:
@@ -37,16 +62,13 @@ def get_user_globals(frame):
   return d
 
 def get_user_locals(frame):
-  #print("In get_user_locals")
   return filter_var_dict(frame.f_locals)
 
 def filter_var_dict(d):
-  #print("In filter_var_dict")
   ret = {}
   for (k,v) in d.items():
     if k not in IGNORE_VARS:
       ret[k] = v
-  #print("From filter_var_dict, returning ", ret)
   return ret
 
 # -----------EPW Postprocessor to remove some aliases ------------
@@ -157,7 +179,6 @@ class PGLogger(bdb.Bdb):
     def user_call(self, frame, argument_list):
         """This method is called when there is the remote possibility
         that we ever need to stop in this function."""
-        #print("in user_call")
         if self._wait_for_mainpyfile:
             return
         if self.stop_here(frame):
@@ -165,9 +186,8 @@ class PGLogger(bdb.Bdb):
 
     def user_line(self, frame):
         """This function is called when we stop or break at this line."""
-        #print("in user_line")
         if self._wait_for_mainpyfile:
-            if (self.canonic(frame.f_code.co_filename) != "<string>" or
+            if (self.canonic(frame.f_code.co_filename) != "<string>" or 
                 frame.f_lineno <= 0):
                 return
             self._wait_for_mainpyfile = False
@@ -175,12 +195,10 @@ class PGLogger(bdb.Bdb):
 
     def user_return(self, frame, return_value):
         """This function is called when a return trap is set here."""
-        #print("in user_return")
         frame.f_locals['__return__'] = return_value
         self.interaction(frame, None, 'return')
 
     def user_exception(self, frame, exc_info):
-        #print("in user_exception")
         exc_type, exc_value, exc_traceback = exc_info
         """This function is called if an exception occurs,
         but only if we are to stop at or just below this level."""
@@ -194,12 +212,11 @@ class PGLogger(bdb.Bdb):
     # General interaction function
 
     def interaction(self, frame, traceback, event_type):
-
         self.setup(frame, traceback)
         tos = self.stack[self.curindex]
         lineno = tos[1]
 
-        # each element is a pair of (function name, ENCODED locals dict)  EPW
+        # each element is a pair of (function name, ENCODED locals dict)
         encoded_stack_locals = []
 
         # climb up until you find '<module>', which is (hopefully) the global scope
@@ -222,7 +239,7 @@ class PGLogger(bdb.Bdb):
           for (k, v) in get_user_locals(cur_frame).items():
             # don't display some built-in locals ...
             if k not in { '__module__', '__doc__' } :   # (EPW: suppress __doc__ in class defn )
-              encoded_locals[k] = p3_encoder.encode(v, self.ignore_id)
+              encoded_locals[k] = p4_encoder.encode(v, self.ignore_id)
 
           encoded_stack_locals.append((cur_name, encoded_locals))
           i -= 1
@@ -233,7 +250,7 @@ class PGLogger(bdb.Bdb):
         for (k, v) in get_user_globals(tos[0]).items():
           #print("getting user globals %s --> %s" % (k,v))
           if k not in { '__doc__'} :    # (EPW: suppress __doc__ at module level)
-             encoded_globals[k] = p3_encoder.encode(v, self.ignore_id)
+             encoded_globals[k] = p4_encoder.encode(v, self.ignore_id)
 
         #print("Got trace_entry")
 
@@ -257,7 +274,6 @@ class PGLogger(bdb.Bdb):
         # if there's an exception, then record its info:
         if event_type == 'exception':
           # always check in f_locals
-          #print("was ac exception")
           exc = frame.f_locals['__exception__']
           trace_entry['exception_msg'] = exc[0].__name__ + ': ' + str(exc[1])
 
@@ -350,6 +366,7 @@ class PGLogger(bdb.Bdb):
 
           # EPW added the logic here to make aliases explicit
           res.append(make_aliases_explicit(e))
+          #res.append(e)
           if e['event'] == 'return' and e['func_name'] == '<module>':
               break
 
@@ -360,7 +377,6 @@ class PGLogger(bdb.Bdb):
          res[-2]['event'] == 'exception' and \
          res[-1]['event'] == 'return' and res[-1]['func_name'] == '<module>':
         res.pop()
-
 
       self.trace = res    # use this if you don't want singletons for aliases
 
@@ -388,9 +404,9 @@ def exec_file_and_pretty_print(mainpyfile):
        print('Error: ' + mainpyfile + ' does not exist')
        sys.exit(1)
 
-    def pretty_print(output_lst):
-       for e in output_lst:
-         pprint.pprint(e)
+def pretty_print(output_lst):
+    for e in output_lst:
+      pprint.pprint(e)
 
     t  = open(mainpyfile).read()
     output_lst = exec_script_str(t, pretty_print)
@@ -429,7 +445,6 @@ def exec_file_and_dump(rootname):
     outf.close()
 
 if __name__ == '__main__':
-
   # need this round-about import to get __builtins__ to work :0
   # Without this, only on the command line, __builtins__ near
   # the top of _runscript resolves to the

@@ -1,6 +1,6 @@
 # based on p3_web_exec
 
-import p3_logger
+import p4_logger
 import json
 import sys
 
@@ -17,4 +17,4 @@ while True:
 
 user_stdin = open(3).read()
 
-p3_logger.exec_script_str(user_code, web_finalizer, stdin=user_stdin)
+p4_logger.exec_script_str(user_code, web_finalizer, stdin=user_stdin)
