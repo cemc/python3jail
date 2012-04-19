@@ -1,5 +1,5 @@
 #!/bin/bash
-
+ 
 if [ -f REM_this_is_jail ];
 then
     chmod -R u+r .
