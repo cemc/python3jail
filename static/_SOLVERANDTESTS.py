@@ -6,13 +6,17 @@ def getGlobals():
 # _GRADER will then put all precode definitions and _IMPORTS, _GRADER into this module
 
 def run():
+    global _solver_stdout
     import sys
-    oldstdin, oldstdout = sys.stdin, sys.stdout
-    sys.stdin, sys.stdout = _StringIO('' if _stdin == None else _stdin), open('solverstdout', 'w')
+    oldstd = (sys.stdin, sys.stdout)
+    sys.stdin, sys.stdout = _StringIO(_stdin), _StringIO()
     exec(compile(open('solver').read(), 'solver', 'exec'), globals(), globals())    
     exec(compile(open('testcode').read(), 'testcode', 'exec'), globals(), globals())
+    _G._solver_stdout = sys.stdout.getvalue()
     sys.stdin.close()
     sys.stdout.close()
-    sys.stdin, sys.stdout = oldstdin, oldstdout
+    sys.stdin, sys.stdout = oldstd
+    f = open('solverstdout', 'w')
+    print(_G._solver_stdout, file = f, end = '')
 
 

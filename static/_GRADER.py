@@ -131,6 +131,37 @@ def call(fname, args, argaliases = {}):
 def sayRunning(statement): # called by submit.php's transformation of autotests
     say('Running '+C(statement)+' &hellip; ', False)
 
+def stdoutGrading(Input, Output, Expected, grader):
+    if grader == '*diff*' or grader == '*strictdiff*':
+        if (grader == '*diff*' and (Expected == "" or Expected == "\n") and (Output == "" or Output == "\n")):
+            msg = "Y" # don't need to say anything
+        else:
+            # ENT is short for ensureNewlineTerminated
+            ENT = lambda S : S if S=='' or S[-1]=='\n' else S + '\n'
+            import re
+            Strip = lambda S : re.sub(r'\s', '', S)
+            if (ENT(Output) == ENT(Expected)):
+                msg = "Y"
+            elif (grader == '*diff*' and Strip(Output) == Strip(Expected)):
+                msg = "NYour output is incorrect, but just barely. Whitespace characters (space, newline, tab) are either missing, or extra ones are present."
+            else:
+                msg = "NYour output is not correct."
+        f = open('stdoutgraderreply', 'w')
+        print(msg, file=f, end='')
+        f.close()
+    else: # custom grader
+        InputLines = Input.splitlines()
+        OutputLines = Output.splitlines()
+        ExpectedLines = Expected.splitlines()
+        realClose = _realClose
+        sfloat = _sfloat
+        oldstdout = _sys.stdout
+        _sys.stdout = open('stdoutgraderreply', 'w')
+        exec(compile(grader, 'grader', 'exec'), locals(), locals())
+        _sys.stdout.close()
+        _sys.stdout = oldstdout
+        
+
 ###############################################################
 ############# stuff you can call from rawtests ################
 ###############################################################
