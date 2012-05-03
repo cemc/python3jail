@@ -14,6 +14,8 @@ then
     chmod -R go+x dev
     chmod -R go+x usr
     chmod -R go+x include
+    chmod -R go+x static
+    chmod -R go+x static/__pycache__
     chmod -R go+x maketrace
 
     mkdir -p scratch
