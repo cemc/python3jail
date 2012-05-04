@@ -92,7 +92,7 @@ def testSameness(U, G, alias):
             return fastFlatListTest(U, G, alias)
         for i in range(len(G)):
             testSameness(U[i], G[i], alias+'['+str(i)+']')
-    if type(G) == float:
+    if type(G) == float or type(U) == float:
         if (abs(G-U)<=0.001*max(1, abs(G))):
             return " its value "+C(U, True)+" is correct!"
     if U == G:
