@@ -81,7 +81,7 @@ def testSameness(U, G, alias):
             return "finished!"
         else:
             return "finished! (returned a value  "+C(U, True)+" but did not need to return anything)"
-    if type(U) != type(G) and not (type(U) == int and type(G) == float):
+    if type(U) != type(G) and not (type(U) == int and type(G) == float or type(G) == int and type(U) == float):
         end("Error: "+C(alias)+" has wrong type "+\
             C(nicetype(U))+", expected "+C(nicetype(G))+"N")
     if type(G) == list:
