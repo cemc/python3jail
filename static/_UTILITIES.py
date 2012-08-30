@@ -10,6 +10,14 @@ import string as __string
 import sys as _sys
 _chars = __string.digits+__string.ascii_letters+' !@#$%^&*()'
 
+def _setLanguage(lang):
+    if lang == 'en_US':
+        import builtins as _builtins
+        _builtins.__dict__['_'] = lambda s : s
+    else:
+        import gettext as _gettext
+        _gettext.translation('cscircles', localedir='/static/locale/', languages=[lang]).install()
+
 class _TeeOut():
     def __init__(self, out1, out2):
         self.out1 = out1

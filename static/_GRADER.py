@@ -5,10 +5,10 @@ import _SOLVERANDTESTS
 
 ## some utilities
 from types import FunctionType, BuiltinFunctionType
-NTL = {int:'Integer',str:'String',float:'Floating Point Number',
-       FunctionType:'Function Type',BuiltinFunctionType:'Function Type',
-       bool:'Boolean',type(None):'"None" Type',range:'Range Type',
-       list:'List',dict:'Dictionary',tuple:'Tuple'}
+NTL = {int:_('Integer'),str:_('String'),float:_('Floating Point Number'),
+       FunctionType:_('Function Type'),BuiltinFunctionType:_('Function Type'),
+       bool:_('Boolean'),type(None):_('"None" Type'),range:_('Range Type'),
+       list:_('List'),dict:_('Dictionary'),tuple:_('Tuple')}
     
 def nicetype(obj):
     return NTL[type(obj)] if type(obj) in NTL else str(type(obj))
@@ -21,7 +21,7 @@ def globalsInitAndEcho(userGlobals, runSolver = True):
     facultative = not runSolver
     if (not facultative):
         sglobals = _SOLVERANDTESTS.getGlobals()
-    fpre = open('graderpre', 'w')
+    fpre = open('graderpre', 'w', encoding='utf-8')
     uspace = list(uglobals.keys())
     uspace.sort()
     S = ""
@@ -29,9 +29,9 @@ def globalsInitAndEcho(userGlobals, runSolver = True):
     for name in uspace:
         if name[0] != '_':                                # info echoed to user
             if hasattr(uglobals[name], '__call__'):
-                sets.append('a function '+C(name))
+                sets.append(_('a function ')+C(name))
             else:
-                sets.append(C(name)+' equal to '+C(uglobals[name], True))
+                sets.append(C(name)+_(' equal to ')+C(uglobals[name], True))
         if not facultative and name[0:2] != '__':                             # vars copied to solver
             U = uglobals[name]
             if hasattr(U, '__call__') or name == '_GRADER' or name == '_G' or ('IOWrapper' in str(type(U))):
@@ -44,11 +44,11 @@ def globalsInitAndEcho(userGlobals, runSolver = True):
     if (len(sets)==1):
         S = sets[0]
     elif (len(sets)==2):
-        S = sets[0]+' and '+sets[1]
+        S = sets[0]+_(' and ')+sets[1]
     elif (len(sets)>2):
-        S = ', '.join(sets[0:-1])+', and '+sets[-1]
+        S = ', '.join(sets[0:-1])+_(', and ')+sets[-1]
     if (len(sets)!=0):
-        print('We defined ' + S + '.', file=fpre)
+        print(_('We defined ') + S + '.', file=fpre)
     fpre.close()
 
 solverMode = True
@@ -62,44 +62,54 @@ def runSolverWithTests():
 def fastFlatListTest(U, G, alias):
     for i in range(len(U)):
         if type(G[i]) != type(U[i]):
-            end("Error: "+C(alias+"["+str(i)+"]")+" has wrong type "+\
-                C(nicetype(U[i]))+", expected "+C(nicetype(G[i]))+"N")
+            end(_("Error: {0} has wrong type {1}, expected {2}").format(
+                C(alias+"["+str(i)+"]"),
+                C(nicetype(U[i])),
+                C(nicetype(G[i])))+"N")
         if G[i] != U[i]:
-            end("Error: "+C(alias+"["+str(i)+"]")+" has wrong value "+\
-                   C(U[i])+", expected "+C(G[i])+"N")
-    return "its value is correct!"
+            end(_("Error: {0} has wrong value {1}, expected {2}").format(
+                C(alias+"["+str(i)+"]"),
+                C(U[i]),
+                C(G[i]))+"N")
+    return _("its value is correct!")
         
 
 def testSameness(U, G, alias):
     if facultative:
         if U==None:
-            return "finished!"
+            return _("finished!")
         else:
-            return "value "+C(U, True)
+            return _("value ")+C(U, True)
     if G==None:
         if U==None:
-            return "finished!"
+            return _("finished!")
         else:
-            return "finished! (returned a value  "+C(U, True)+" but did not need to return anything)"
+            return _("finished! (returned a value {} but did not need to return anything)").format(C(U, True))
     if type(U) != type(G) and not (type(U) == int and type(G) == float or type(G) == int and type(U) == float):
-        end("Error: "+C(alias)+" has wrong type "+\
-            C(nicetype(U))+", expected "+C(nicetype(G))+"N")
+        end(_("Error: {0} has wrong type {1}, expected {2}").format(
+            C(alias),
+            C(nicetype(U)),
+            C(nicetype(G)))+"N")
     if type(G) == list:
         if len(G) != len(U):
-            end("Error: list "+C(alias)+" has wrong length "+\
-                C(len(U))+", expected "+C(len(G))+"N")
+            end(_("Error: list {0} has wrong length {1}, expected {2}").format(
+                C(alias),
+                C(len(U)),
+                C(len(G)))+"N")
         if fastListTest:
             return fastFlatListTest(U, G, alias)
         for i in range(len(G)):
             testSameness(U[i], G[i], alias+'['+str(i)+']')
     if type(G) == float or type(U) == float:
         if (abs(G-U)<=0.001*max(1, abs(G))):
-            return " its value "+C(U, True)+" is correct!"
+            return _(" its value {} is correct!").format(C(U, True))
     if U == G:
-        return " its value "+C(U, True)+" is correct!"
+        return _(" its value {} is correct!").format(C(U, True))
     else:
-        end("Error: "+C(alias)+" has wrong value "+C(U)+\
-            ", expected "+C(G)+"N")
+        end(_("Error: {0} has wrong value {1}, expected {2}").format(
+            C(alias),
+            C(U),
+            C(G))+"N")
 
 # low-level function-call testing faculty
 # returns: (description/alias of function call, call return value)
@@ -114,22 +124,21 @@ def call(fname, args, argaliases = {}):
             argnames[i] = repr(args[i])
 
     desc = fname+'('+', '.join(argnames)+')'
-    say('Running '+C(desc) + '&hellip;', False)
+    say(_('Running {} &hellip;').format(C(desc)), False)
 
     if solverMode:
         F = sglobals[fname]
     else:
         if fname not in uglobals:
-            end("Error: function "+C(fname)+" not definedN")
+            end(_("Error: function {} not defined").format(C(fname))+"N")
         F = uglobals[fname]
         if not hasattr(F, '__call__'):
-            end("Error: "+C(fname)+" should be defined as a function, but found type "+\
-                   C(nicetype(F))+'N')
+            end(_("Error: {0} should be defined as a function, but found type {1}").format(C(nicetype(F)))+'N')
             
     return desc, F(*args)
 
 def sayRunning(statement): # called by submit.php's transformation of autotests
-    say('Running '+C(statement)+' &hellip; ', False)
+    say(_('Running {} &hellip;').format(C(statement)), False)
 
 def stdoutGrading(Input, Output, Expected, grader):
     if grader == '*diff*' or grader == '*strictdiff*':
@@ -143,10 +152,10 @@ def stdoutGrading(Input, Output, Expected, grader):
             if (ENT(Output) == ENT(Expected)):
                 msg = "Y"
             elif (grader == '*diff*' and Strip(Output) == Strip(Expected)):
-                msg = "NYour output is incorrect, but just barely. Whitespace characters (space, newline, tab) are either missing, or extra ones are present."
+                msg = "N"+_("Your output is incorrect, but just barely. Whitespace characters (space, newline, tab) are either missing, or extra ones are present.")
             else:
-                msg = "NYour output is not correct."
-        f = open('stdoutgraderreply', 'w')
+                msg = "N"+_("Your output is not correct.")
+        f = open('stdoutgraderreply', 'w', encoding='utf-8')
         print(msg, file=f, end='')
         f.close()
     else: # custom grader
@@ -156,7 +165,7 @@ def stdoutGrading(Input, Output, Expected, grader):
         realClose = _realClose
         sfloat = _sfloat
         oldstdout = _sys.stdout
-        _sys.stdout = open('stdoutgraderreply', 'w')
+        _sys.stdout = open('stdoutgraderreply', 'w', encoding='utf-8')
         exec(compile(grader, 'grader', 'exec'), locals(), locals())
         _sys.stdout.close()
         _sys.stdout = oldstdout
@@ -175,7 +184,7 @@ def C(S, doRepr = False):
 
 def say(S, withbr = True):
     if solverMode and not facultative: return
-    fpost = open('graderreply', 'a')
+    fpost = open('graderreply', 'a', encoding='utf-8')
     if withbr == True: S = S + '<br/>'
     elif withbr != 'noend': S = S + "\n"
     print(S, file=fpost, end='')
@@ -190,16 +199,16 @@ def checkVar(vname, alias = None):
     if solverMode: return
     if vname == '': return
     if alias == None: alias = vname
-    say('Checking '+C(alias)+' &hellip; ', False)        
+    say(_('Checking {} &hellip; ').format(C(alias)), False)        
     if vname not in sglobals:
         end("Internal Error: test var "+C(vname)+" not defined by solverE")
     if vname not in uglobals:
-        end("Error: variable "+C(vname)+" not definedN")
+        end(_("Error: variable {} not defined").format(C(vname))+"N")
     say(testSameness(uglobals[vname], sglobals[vname], alias))
 
 
 def set(vname, value):
-    say('Setting '+C(vname)+' to '+C(value, True))
+    say(_('Setting {0} to {1}').format(C(vname), C(value, True)))
     if solverMode:
         sglobals[vname] = value
     else:
