@@ -177,10 +177,8 @@ def stdoutGrading(Input, Output, Expected, grader):
 fastListTest = False
 
 # convert a variable name or value to html
-from cgi import escape
 def C(S, doRepr = False):
-    if doRepr: S = repr(S)
-    return "<code class='gmi'>" + escape(str(S)) + "</code>"
+    return _code(S, doRepr)
 
 def say(S, withbr = True):
     if solverMode and not facultative: return

@@ -10,6 +10,11 @@ import string as __string
 import sys as _sys
 _chars = __string.digits+__string.ascii_letters+' !@#$%^&*()'
 
+from cgi import escape as _escape
+def _code(S, doRepr = False): # convert a variable name or value to html
+    if doRepr: S = repr(S)
+    return "<code class='gmi'>" + _escape(str(S)) + "</code>"
+
 def _setLanguage(lang):
     if lang == 'en_US':
         import builtins as _builtins
