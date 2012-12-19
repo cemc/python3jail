@@ -8,7 +8,7 @@ then
     chmod o-r .gitignore
     chmod o-r maintenance
     chmod go+x . 
-    chmod -R go+x python*
+    chmod -R go+x python3 # this is copied from bin/python3
     chmod -R go+x lib64
     chmod -R go+x lib
     chmod -R go+x dev

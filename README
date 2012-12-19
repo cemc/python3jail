@@ -1,0 +1,21 @@
+How to refresh the jail (e.g. if Python is patched).
+NB: the reasons for the other random lib and lib64, etc files are not covered here.
+
+in jail:
+sudo rm python3 lib/libpython*
+sudo rm -r bin include lib/pkgconfig lib/python* share
+
+in Python-3.x.x source dir, reinstall python with jail as prefix:
+./configure --prefix=/whatever/path/to/python3jail
+make
+sudo make install
+
+in jail:
+cp bin/python3 .
+
+if needed, in jail/dev (src: http://www.cyberciti.biz/faq/howto-run-nginx-in-a-chroot-jail/):
+sudo /bin/mknod -m 0666 null c 1 3
+sudo /bin/mknod -m 0666 random c 1 8
+sudo /bin/mknod -m 0444 urandom c 1 9
+
+run maintenance
