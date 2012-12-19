@@ -37,10 +37,13 @@ def globalsInitAndEcho(userGlobals, runSolver = True):
             if hasattr(U, '__call__') or name == '_GRADER' or name == '_G' or ('IOWrapper' in str(type(U))):
                 sglobals[name] = U
             else:
-                try:
-                    sglobals[name] = _deepcopy(U)
-                except TypeError:
+                if (name == '_sys'): # workaround for bug dec 19 2012
                     sglobals[name] = U
+                else:
+                    try:
+                        sglobals[name] = _deepcopy(U)
+                    except TypeError:
+                        sglobals[name] = U
     if (len(sets)==1):
         S = sets[0]
     elif (len(sets)==2):
