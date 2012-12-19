@@ -1,12 +1,16 @@
 #!/bin/bash
+
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
  
 if [ -f REM_this_is_jail ];
 then
     chmod -R u+r .
     chmod -R go-wx+r .
-    chmod o-r .git
-    chmod o-r .gitignore
-    chmod o-r maintenance
+    chmod o-r * .*
+    chmod o+r static
     chmod go+x . 
     chmod -R go+x python3 # this is copied from bin/python3
     chmod -R go+x lib64
@@ -17,6 +21,9 @@ then
     chmod -R go+x static
     chmod -R go+x static/__pycache__
     chmod -R go+x maketrace
+
+    sudo chown -R cscircles *
+    sudo chgrp -R cscircles *
 
     mkdir -p scratch
     sudo rm -rf scratch/*
