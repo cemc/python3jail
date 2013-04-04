@@ -44,7 +44,7 @@ def encode(dat, ignore_id=False):
 
       user_attrs = sorted([e for e in dict.keys()
               if e not in {'__doc__', '__module__', '__return__', '__locals__',
-                           '__weakref__', '__dict__'}
+                           '__weakref__', '__dict__', '__qualname__'}
                          ])
       for attr in user_attrs:
         foo = [encode_helper(attr, new_compound_obj_ids),
@@ -97,7 +97,12 @@ def encode(dat, ignore_id=False):
                 if hasattr(dat, '__dict__'):
                     append_attributes(ret, new_compound_obj_ids, dat.__dict__)
 
-      elif repr(typ)[:6] == "<class" and obj_as_string.find('object') >= 0:    # is it  an instance?
+      elif repr(dat).startswith("<module "):
+            ret = ['INSTANCE', my_small_id, 'module']
+            provides = ' '.join([i for i in dir(dat) if not i.startswith('_')])
+            append_attributes(ret, new_compound_obj_ids, {'name':dat.__name__, 'dir': provides})
+
+      elif repr(typ).startswith("<class ") and obj_as_string.find('object') >= 0:    # is it  an instance?
             ret = ['INSTANCE', my_small_id, dat.__class__.__name__]
             if hasattr(dat, '__dict__'):
                 append_attributes(ret, new_compound_obj_ids, dat.__dict__)
