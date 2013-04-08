@@ -282,16 +282,16 @@ class PGLogger(bdb.Bdb):
 
         # when instantiating objects there is a noop step
         # due to hiding of __qualname__, don't show it.
-        dup = False
+        '''dup = False
         if len(self.trace) > 0:
           import copy
           newView = copy.copy(trace_entry)
           newView["event"]="-"
           oldView = copy.copy(self.trace[-1])
           oldView["event"]="-"
-          dup = (newView == oldView)
-        if (not dup):
-          self.trace.append(trace_entry)
+          dup = (newView == oldView)'''
+        #if (not dup):
+        self.trace.append(trace_entry)
 
         if len(self.trace) >= MAX_EXECUTED_LINES:
           self.trace.append(dict(event='instruction_limit_reached', exception_msg='(stopped after ' + str(MAX_EXECUTED_LINES) + ' steps to prevent possible infinite loop)'))
