@@ -1,0 +1,3 @@
+[submodule "OnlinePythonTutor"]
+	path = OnlinePythonTutor
+	url = git@github.com:daveagp/OnlinePythonTutor.git
