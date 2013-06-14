@@ -1,10 +1,15 @@
 # cscircles adapter for OnlinePythonTutor v3 visualizer
 # reads json input that is a dict of http request variables
 
+# it is REQUIRED for this version that you run this
+# from the directory containing the OnlinePythonTutor v3 directory
+# and that directory has a+x permission (listable)
+
 import json
 import sys
-sys.path.insert(0, '/OnlinePythonTutor/v3/') # pg_logger lives here
-import pg_logger
+import imp
+sys.path[0:0] = '.'
+import pg_logger # we mean the one in OnlinePythonTutor/v3
 
 raw_input_json = None
 options_json = None

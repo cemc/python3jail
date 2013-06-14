@@ -20,7 +20,8 @@ then
     chmod -R go+x include
     chmod -R go+x static
     chmod -R go+x static/__pycache__
-    chmod -R go+x maketrace
+    chmod -R go+rx maketrace
+    chmod go+x OnlinePythonTutor/v3 # to find pg_logger and company
 
     sudo chown -R cscircles *
     sudo chgrp -R cscircles *
