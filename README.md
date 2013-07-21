@@ -20,6 +20,8 @@ might want need some of it back, for example shared libraries as we explain
 below. Getting copies of all these necessities is what takes the most work
 on the administrative side.
 
+These files are released under a GPLv3 license.
+
 Installation
 ============
 
@@ -67,6 +69,6 @@ and file permissions. Look at the `maintenance` script. Change
 the jail). You may need to change "apache" if your web server runs
 under a different user. Then, run
 
-* `./sudo maintenance`
+* `sudo ./maintenance`
 
 to effect these changes.
