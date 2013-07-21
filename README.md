@@ -1,4 +1,5 @@
 python3jail: A chroot jail for Python 3
+=======================================
 
 This is a module to be used in conjunction with the 
 safeexec module `https://github.com/cemc/safeexec` in order
@@ -19,11 +20,12 @@ might want need some of it back, for example shared libraries as we explain
 below. Getting copies of all these necessities is what takes the most work
 on the administrative side.
 
-INSTALLATION
+Installation
 ============
+
 * download Python source from online. unzip it somewhere temporary.
 
-* git clone https://github.com/cemc/python3jail.git
+* `git clone https://github.com/cemc/python3jail.git`
   * this creates your python3jail directory, referenced below
 
 * in Python-3.x.x source dir, 
@@ -46,17 +48,18 @@ additional libraries are needed, "strace -f", ldd, and lsof are ways
 to figure out what's missing. On a 32-bit machine, lib might
 be necessary in place of/addition to lib64.
 
-* At this point you can do a basic test:
+* At this point you can do a basic test (enter it all on one line):
 
-`(safeexecdir)/safeexec --chroot_dir (python3jaildir) --exec_dir / --env_vars PY --exec /bin/python3 -u -S -c 'print(1+1)'`
+    (safeexecdir)/safeexec --chroot_dir (python3jaildir) --env_vars PY
+    --exec_dir / --exec /bin/python3 -u -S -c 'print(1+1)'
 
 should print something like
 
-`2
-OK
-elapsed time: 0 seconds
-memory usage: 0 kbytes
-cpu usage: 0.005 seconds`
+    2
+    OK
+    elapsed time: 0 seconds
+    memory usage: 0 kbytes
+    cpu usage: 0.005 seconds
 
 If this is working, all that's left is to set up the scratch directory
 and file permissions. Look at the `maintenance` script. Change
@@ -66,3 +69,4 @@ under a different user. Then, run
 
 * `./sudo maintenance`
 
+to effect these changes.
