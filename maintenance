@@ -12,16 +12,13 @@ then
     chmod o-r * .*
     chmod o+r static
     chmod go+x . 
-    chmod -R go+x python3 # this is copied from bin/python3
+    chmod a+rx bin
+    chmod a+rx bin/python3*
     chmod -R go+x lib64
     chmod -R go+x lib
     chmod -R go+x dev
-    chmod -R go+x usr
     chmod -R go+x include
-    chmod -R go+x static
-    chmod -R go+x static/__pycache__
-    chmod -R go+rx maketrace
-    chmod go+x OnlinePythonTutor/v3 # to find pg_logger and company
+    chmod -R go+rx static
 
     sudo chown -R cscircles *
     sudo chgrp -R cscircles *

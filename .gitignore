@@ -1,2 +1,9 @@
+# emacs temp files
 *~
+# python installer will create these
+bin
+include
+lib
+share
+# python cache files
 __pycache__
