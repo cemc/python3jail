@@ -33,11 +33,11 @@ Installation
   * `./configure --prefix=/path/to/python3jail`
   * `make`
   * `make install`
-  * (that created bin, include, lib, share)
+  * (that created bin, include, lib, share in python3jail)
 
 * in /path/to/python3jail
 
-  * `cp \lib64\* lib64`    
+  * `cp /lib64/* lib64` # not recursive is fine    
   * `sudo mknod -m 0666 ./dev/null c 1 3`
   * `sudo mknod -m 0666 ./dev/random c 1 8`
   * `sudo mknod -m 0444 ./dev/urandom c 1 9`
