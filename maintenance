@@ -20,11 +20,13 @@ then
     chmod -R go+x include
     chmod -R go+rx static
 
+    # change these to your user name
     sudo chown -R cscircles *
     sudo chgrp -R cscircles *
 
     mkdir -p scratch
     sudo rm -rf scratch/*
+    # this allows the webserver to create scratch dirs
     sudo chgrp apache scratch
     chmod g+rwx scratch
     chmod o-rwx scratch
