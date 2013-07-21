@@ -26,7 +26,7 @@ then
 
     mkdir -p scratch
     sudo rm -rf scratch/*
-    # this allows the webserver to create scratch dirs
+    # this allows the webserver to create scratch subdirectories
     sudo chgrp apache scratch
     chmod g+rwx scratch
     chmod o-rwx scratch
