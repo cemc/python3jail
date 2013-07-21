@@ -50,8 +50,8 @@ be necessary in place of/addition to lib64.
 
 * At this point you can do a basic test (enter it all on one line):
 
-    (safeexecdir)/safeexec --chroot_dir (python3jaildir) --env_vars PY
-    --exec_dir / --exec /bin/python3 -u -S -c 'print(1+1)'
+     (safeexecdir)/safeexec --chroot_dir (python3jaildir) --env_vars PY
+     --exec_dir / --exec /bin/python3 -u -S -c 'print(1+1)'
 
 should print something like
 
