@@ -4,7 +4,7 @@ python3jail: A chroot jail for Python 3
 This is a module to be used in conjunction with the 
 safeexec module `https://github.com/cemc/safeexec` in order
 to securely run unknown user code on your machine.
-
+ 
 The approach with safeexec is to use resource limits (rlimits)
 in conjunction with walling off large parts of the file system.
 It is the chroot (change root) command that lets us run the user code
