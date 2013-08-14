@@ -72,3 +72,12 @@ under a different user. Then, run
 * `sudo ./maintenance`
 
 to effect these changes.
+
+Possibly Helpful Remarks
+========================
+
+On at least one machine, there were necessary files in /usr/lib
+which we diagnosed by the error
+ ImportError: libz.so.1: cannot open shared object file: No such file or directory
+To fix this, we copied /usr/lib into python3jail/usr/lib, and added
+"usr" to the list of folders that ./maintenance makes accessible.
