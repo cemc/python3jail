@@ -50,6 +50,12 @@ additional libraries are needed, "strace -f", ldd, and lsof are ways
 to figure out what's missing. On a 32-bit machine, lib might
 be necessary in place of/addition to lib64.
 
+On at least one machine, there were necessary files in /usr/lib
+which we diagnosed by the error
+ ImportError: libz.so.1: cannot open shared object file: No such file or directory
+To fix this if it occurs, create python3jail/usr, and copy /usr/lib
+into python3jail/usr/lib.
+
 * At this point you can do a basic test (enter it all on one line):
 
      `(safeexecdir)/safeexec --chroot_dir (python3jaildir) --env_vars PY`
@@ -73,11 +79,3 @@ under a different user. Then, run
 
 to effect these changes.
 
-Possibly Helpful Remarks
-========================
-
-On at least one machine, there were necessary files in /usr/lib
-which we diagnosed by the error
- ImportError: libz.so.1: cannot open shared object file: No such file or directory
-To fix this, we copied /usr/lib into python3jail/usr/lib, and added
-"usr" to the list of folders that ./maintenance makes accessible.

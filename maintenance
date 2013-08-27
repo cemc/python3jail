@@ -19,6 +19,8 @@ then
     chmod -R go+x dev
     chmod -R go+x include
     chmod -R go+rx static
+    # the next one might not exist
+    chmod --silent -R go+x usr
 
     # change these to your user name
     sudo chown -R cscircles *
